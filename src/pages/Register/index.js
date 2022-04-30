@@ -18,6 +18,11 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import InputMask from 'react-input-mask';
 import User from '../../api/User';
+import { cpf } from 'cpf-cnpj-validator';
+import { useAlert } from 'react-alert';
+import dayjs from 'dayjs';
+import 'dayjs/locale/pt-br';
+dayjs.locale('pt-br');
 
 
 function Copyright(props) {
@@ -38,9 +43,10 @@ const theme = createTheme();
 
 export default function Registry() {
 
+  const alert = useAlert();
   const [valueDate, setValueDate] = React.useState(null);
   const [value, setValue] = React.useState(null);
-  const [cpf, setCpf] = React.useState("");
+  const [cpfUser, setCpfUser] = React.useState("");
   const [cep, setCep] = React.useState(false);
   const [dataCep, setDataCep] = React.useState(null);
   const [city, setCity] = React.useState("");
@@ -80,16 +86,21 @@ export default function Registry() {
       nome: data.get('firstName'),
       sobrenome: data.get('lastName'),
       email: data.get('email'),
-      cpf: cpf.replace(/\D/g, ''),
+      cpf: cpfUser.replace(/\D/g, ''),
       senha: data.get('password'),
       sexo: currency,
-      dt_aniversario: valueDate,
+      dt_aniversario: dayjs(valueDate).format("DDMMYYYY"),
     }
-    console.log(form)
 
-    let response = await User.registerUser(form);
-    if (response.status !== 'error') {
-      console.log("cadastrou")
+    if (!cpf.isValid(cpfUser)) {
+      alert.error("CPF INVALIDO")
+    } else {
+      let response = await User.registerUser(form);
+      if (response.status !== 'error') {
+        console.log(response.data)
+      } else {
+        console.log(response.data)
+      }
     }
   };
 
@@ -165,10 +176,10 @@ export default function Registry() {
                   name="Cpf"
                   placeholder="CPF/CNPJ"
                   className="input"
-                  value={cpf}
+                  value={cpfUser}
                   required
                   mask="999.999.999-99"
-                  onChange={(event) => setCpf(event.target.value)}
+                  onChange={(event) => setCpfUser(event.target.value)}
                 >
                   {() =>
                     <TextField
@@ -333,13 +344,6 @@ export default function Registry() {
                   autoFocus
                 />
               </Grid>
-
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive inspiration, marketing promotions and updates via email."
-                />
-              </Grid>
             </Grid>
             <Button
               type="submit"
@@ -351,7 +355,7 @@ export default function Registry() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="#/login" variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>
