@@ -24,7 +24,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Orders from './Orders';
 import { useAlert } from 'react-alert';
-import { login, userType, userName } from '../../api/auth';
+import { logout } from '../../api/auth';
 
 function Copyright(props: any) {
   return (
@@ -110,10 +110,8 @@ function DashboardContent() {
     setAnchorElUser(null);
   };
 
-  const logout = () => {
-    login(null)
-    userType(null);
-    userName(null);
+  const handleLogout = () => {
+    logout();
     alert.success("Logout Solicitado")
     setTimeout(function () {
       window.location.assign('#/login')
@@ -149,7 +147,7 @@ function DashboardContent() {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Dashboard
+              List Products
             </Typography>
             <IconButton color="inherit">
               <Badge color="secondary">
@@ -188,7 +186,7 @@ function DashboardContent() {
 
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center" onClick={logout}>{setting}</Typography>
+                  <Typography textAlign="center" onClick={handleLogout}>{setting}</Typography>
                 </MenuItem>
               ))}
             </Menu>

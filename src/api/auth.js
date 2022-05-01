@@ -8,6 +8,8 @@ export const login = token => {
 }
 export const logout = () => {
     localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_TYPE);
+    localStorage.removeItem(USER_NAME);
     localStorage.clear();
 }
 export const userType = (type) => { localStorage.setItem(USER_TYPE, type) };
