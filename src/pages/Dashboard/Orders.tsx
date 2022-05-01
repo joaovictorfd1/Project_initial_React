@@ -19,6 +19,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import FormCreate from '../../components/formCreateProducts';
 import FormList from '../../components/formListProducts';
 import { useAlert } from 'react-alert';
+import FormUpdate from '../../components/formUpdateProducts';
 
 
 const style = {
@@ -40,11 +41,16 @@ export default function DataTable() {
 
   const alert = useAlert()
   const [openReadProduct, setOpenReadProduct] = useState(false);
-  const [deleteProduct, setDeleteProduct] = useState(false) 
+  const [deleteProduct, setDeleteProduct] = useState(false)
   const handleOpenProduct = () => setOpenReadProduct(true);
   const handleCloseProduct = () => setOpenReadProduct(false);
 
+  const [openEditProduct, setOpenEditProduct] = useState(false)
+  const handleOpenEditProduct = () => setOpenEditProduct(true);
+  const handleCloseEditProduct = () => setOpenEditProduct(false);
+
   const [item, setItem] = useState([])
+  const [itemEdit, setItemEdit] = useState([])
 
   const columns: GridColDef[] = [
     {
@@ -95,7 +101,10 @@ export default function DataTable() {
               handleOpenProduct()
               setItem(params.row)
             }}>Visualizar</Button>
-            <Button color="warning" variant="contained" style={{ marginLeft: '10px' }}>Editar</Button>
+            <Button color="warning" variant="contained" style={{ marginLeft: '10px' }} onClick={() => {
+              setItem(params.row)
+              handleOpenEditProduct()
+            }}>Editar</Button>
             <Button color="error" variant="contained" style={{ marginLeft: '10px' }} onClick={() => {
               deleteProductRequest(params.row.id)
             }}>Deletar</Button>
@@ -115,29 +124,18 @@ export default function DataTable() {
 
   const deleteProductRequest = async (id: any) => {
     let response = await Products.delete(id);
-    if(response.status !== 'error') {
+    if (response.status !== 'error') {
       getProducts();
       alert.success("Produto deletado");
     }
   }
-
-  /*
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-  };
-  */
 
   useEffect(() => {
     getProducts();
   }, [])
 
   useEffect(() => {
-    if(deleteProduct) {
+    if (deleteProduct) {
       handleCloseProduct();
       getProducts();
     }
@@ -182,6 +180,18 @@ export default function DataTable() {
           </Typography>
         </Box>
       </Modal>
+
+      <Modal
+        open={openEditProduct}
+        onClose={handleCloseEditProduct}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <FormUpdate
+          object={item}
+        />
+      </Modal>
+
       <div style={{ height: 700, width: '100%' }}>
         <DataGrid
           rows={products}

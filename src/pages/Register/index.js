@@ -97,9 +97,10 @@ export default function Registry() {
     } else {
       let response = await User.registerUser(form);
       if (response.status !== 'error') {
-        console.log(response.data)
+        alert.success("Cadastro Realizado")
+        window.location.assign("#/login")
       } else {
-        console.log(response.data)
+        alert.success("Cadastro não realizado")
       }
     }
   };
