@@ -17,7 +17,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import User from '../../api/User';
-import { login } from '../../api/auth';
+import { login, userType, userName } from '../../api/auth';
 import { useAlert } from 'react-alert'
 
 function Copyright(props) {
@@ -45,8 +45,13 @@ export default function Login() {
     let password = data.get('password')
     let response = await User.login(email, password)
     if (response.data.length !== 0) {
-      login(response.data[0].token)
       alert.success("Login Success");
+      userType("USER");
+      userName(response.data[0].nome);
+      login(response.data[0].token);
+      setTimeout(function () {
+        window.location.assign("#/dashboard");
+      }, 2000)
     } else {
       alert.error("Email/Password wrong");
     }

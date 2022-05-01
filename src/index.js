@@ -12,8 +12,8 @@ dayjs.locale('pt-br');
 
 const options = {
   // you can also just use 'bottom center'
-  position: positions.TOP_RIGHT,
-  timeout: 2500,
+  position: positions.BOTTOM_CENTER,
+  timeout: 1800,
   offset: '30px',
   // you can also just use 'scale'
   transition: transitions.SCALE

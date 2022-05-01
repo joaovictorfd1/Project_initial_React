@@ -5,6 +5,7 @@ import { isAuthenticated, getUserType } from './api/auth';
 
 const Login = React.lazy(() => import('./pages/Login'));
 const Registry = React.lazy(() => import('./pages/Register'));
+const Dashboard = React.lazy(() => import('./pages/Dashboard'));
 //const NotFound = React.lazy(() => import('./pages/NotFound'));
 const PrivateRoute = ({ component: Component, accessLevel, ...rest }) => {
 
@@ -49,9 +50,7 @@ const Routes = () => {
           </Route>
 
           <PrivateRoute path="/dashboard" accessLevel="USER">
-            {/* 
-            <HortazShop />
-            */}
+            <Dashboard />
           </PrivateRoute>
         </Switch>
       </React.Suspense>
