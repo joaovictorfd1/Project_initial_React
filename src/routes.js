@@ -60,7 +60,7 @@ const Routes = () => {
             {
               isAuthenticated() ?
                 <Redirect to="/dashboard" /> :
-                <Redirect to="/login" />
+                <Login/>
             }
           </Route>
           <Route path="/login">
@@ -69,7 +69,6 @@ const Routes = () => {
                 <Redirect to="/dashboard" /> :
                 <Login />
             }
-            <Login />
           </Route>
 
           <Route path="/registry">

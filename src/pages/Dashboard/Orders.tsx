@@ -1,10 +1,50 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import Products from '../../api/Products';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
+import Avatar from '@mui/material/Avatar';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Link from '@mui/material/Link';
+import Grid from '@mui/material/Grid';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Container from '@mui/material/Container';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import FormCreate from '../../components/formCreateProducts';
+import FormList from '../../components/formListProducts';
+import { useAlert } from 'react-alert';
+
+
+const style = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 600,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
+
+const theme = createTheme();
 
 
 export default function DataTable() {
+
+  const alert = useAlert()
+  const [openReadProduct, setOpenReadProduct] = useState(false);
+  const [deleteProduct, setDeleteProduct] = useState(false) 
+  const handleOpenProduct = () => setOpenReadProduct(true);
+  const handleCloseProduct = () => setOpenReadProduct(false);
+
+  const [item, setItem] = useState([])
 
   const columns: GridColDef[] = [
     {
@@ -42,18 +82,27 @@ export default function DataTable() {
       type: 'number',
       width: 200,
     },
-  ];
-
-  const rows = [
-    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-    { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-    { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-    { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-    { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-    { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-    { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-    { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-    { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+    {
+      field: 'Ações',
+      headerName: 'Ações',
+      type: 'text',
+      width: 500,
+      renderCell: (params) => {
+        return (
+          <>
+            <Button color="secondary" variant="contained" style={{ marginLeft: '10px' }} onClick={() => {
+              setDeleteProduct(false)
+              handleOpenProduct()
+              setItem(params.row)
+            }}>Visualizar</Button>
+            <Button color="warning" variant="contained" style={{ marginLeft: '10px' }}>Editar</Button>
+            <Button color="error" variant="contained" style={{ marginLeft: '10px' }} onClick={() => {
+              deleteProductRequest(params.row.id)
+            }}>Deletar</Button>
+          </>
+        )
+      }
+    }
   ];
 
   const [products, setProducts] = useState([])
@@ -64,18 +113,83 @@ export default function DataTable() {
     }
   }
 
+  const deleteProductRequest = async (id: any) => {
+    let response = await Products.delete(id);
+    if(response.status !== 'error') {
+      getProducts();
+      alert.success("Produto deletado");
+    }
+  }
+
+  /*
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    console.log({
+      email: data.get('email'),
+      password: data.get('password'),
+    });
+  };
+  */
+
   useEffect(() => {
     getProducts();
   }, [])
 
+  useEffect(() => {
+    if(deleteProduct) {
+      handleCloseProduct();
+      getProducts();
+    }
+  }, [deleteProduct])
+
   return (
-    <div style={{ height: 700, width: '100%' }}>
-      <DataGrid
-        rows={products}
-        columns={columns}
-        pageSize={15}
-        rowsPerPageOptions={[5]}
-      />
+    <div>
+
+      <FormCreate />
+      {/* Read Product */}
+
+      <Modal
+        open={openReadProduct}
+        onClose={handleCloseProduct}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Product Information
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            <ThemeProvider theme={theme}>
+              <Container component="main" maxWidth="xs">
+                <CssBaseline />
+                <Box
+                  sx={{
+                    marginTop: 8,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                  }}
+                >
+                  <FormList
+                    object={item}
+                    deletedProduct={setDeleteProduct}
+                    value={deleteProduct}
+                  />
+                </Box>
+              </Container>
+            </ThemeProvider>
+          </Typography>
+        </Box>
+      </Modal>
+      <div style={{ height: 700, width: '100%' }}>
+        <DataGrid
+          rows={products}
+          columns={columns}
+          pageSize={15}
+          rowsPerPageOptions={[5]}
+        />
+      </div>
     </div>
   );
 }
