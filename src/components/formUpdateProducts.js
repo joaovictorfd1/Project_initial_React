@@ -27,9 +27,6 @@ export default function FormUpdate(props) {
   const [stocks, setStocks] = useState(parseInt(object.qt_estoque));
   const [sales, setSales] = useState(parseInt(object.qt_vendas));
   const [profile, setProfile] = useState(false);
-  const [openEdit, setOpenEdit] = useState(false);
-  const handleOpenEdit = () => setOpenEdit(true);
-  const handleCloseEdit = () => setOpenEdit(false);
 
   const handleFileChange = e => {
     var filePhotoActual = e.target.files[0];
@@ -69,9 +66,8 @@ export default function FormUpdate(props) {
       qt_vendas: parseInt(sales),
     }
 
-    let response = await Products.update(form)
+    let response = await Products.update(idProduct, form)
     if (response.status !== 'error') {
-      handleCloseEdit()
       props.deletedProduct(true)
       alert.success("Editado com sucesso")
     } else {

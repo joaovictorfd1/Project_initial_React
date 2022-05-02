@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { HashRouter, Switch, Route, Redirect } from 'react-router-dom';
+import { HashRouter, Switch, Route, Redirect, BrowserRouter as Router } from 'react-router-dom';
 import { isAuthenticated, getUserType } from './api/auth';
 import notFoundImage from './not_found.png';
 import styled from "styled-components";
@@ -25,6 +25,7 @@ const PrivateRoute = ({ component: Component, accessLevel, ...rest }) => {
   }
 }
 
+
 const Title = styled.div`
   display: flex;
   flex-direction: column;
@@ -41,27 +42,26 @@ const SpanText = styled.span`
   font-weigth: bold;
 `
 
+const NoMatchPage = () => {
+  return (
+    <Title>
+      <Image src={notFoundImage} />
+      <SpanText>Página não encontrada</SpanText>
+    </Title>
+  )
+}
+
 const Routes = () => {
-  /*
-  const [show, setShow] = useState(false)
-
-  useEffect(() => {
-    const queryString = window.location.href;
-    if (!queryString.includes('dashboard') && !queryString.includes('login') && !queryString.includes('registry')) {
-      setShow(true)
-    }
-  }, [])
-  */
-
   return (
     <HashRouter basename={process.env.PUBLIC_URL}>
       <React.Suspense fallback={<div></div>}>
         <Switch>
+
           <Route path="/" exact>
             {
               isAuthenticated() ?
                 <Redirect to="/dashboard" /> :
-                <Login/>
+                <Login />
             }
           </Route>
           <Route path="/login">
@@ -80,15 +80,6 @@ const Routes = () => {
             }
           </Route>
           
-          {/* 
-          {show && (
-            <Title>
-              <Image src={notFoundImage}/>
-              <SpanText>Página não encontrada</SpanText>
-            </Title>
-          )}
-          */}
-
           <PrivateRoute path="/dashboard" accessLevel="USER">
             <Dashboard />
           </PrivateRoute>

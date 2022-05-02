@@ -6,14 +6,8 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import FormCreate from '../../components/formCreateProducts';
@@ -105,16 +99,17 @@ export default function DataTable() {
               setDeleteProduct(false)
               handleOpenProduct()
               setItem(params.row)
-            }}>Visualizar</Button>
+            }}>Show</Button>
             <Button color="warning" variant="contained" style={{ marginLeft: '10px' }} onClick={() => {
+              setDeleteProduct(false)
               setItem(params.row)
               handleOpenEditProduct()
-            }}>Editar</Button>
+            }}>Edit</Button>
             <Button color="error" variant="contained" style={{ marginLeft: '10px' }} onClick={() => {
               setNameProduct(params.row.nome)
               setIdDelete(params.row.id)
               handleOpenDeleteCheck();
-            }}>Deletar</Button>
+            }}>Delete</Button>
           </>
         )
       }
@@ -145,6 +140,7 @@ export default function DataTable() {
   useEffect(() => {
     if (deleteProduct) {
       handleCloseProduct();
+      handleCloseEditProduct();
       getProducts();
     }
   }, [deleteProduct])
@@ -197,6 +193,8 @@ export default function DataTable() {
       >
         <FormUpdate
           object={item}
+          deletedProduct={setDeleteProduct}
+          value={deleteProduct}
         />
       </Modal>
 
@@ -208,7 +206,7 @@ export default function DataTable() {
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Deseja deletar o produto {nameProduct}?
+            Do you want to delete the product {nameProduct}?
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             <ThemeProvider theme={theme}>
@@ -224,10 +222,10 @@ export default function DataTable() {
                 >
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
-                      <Button color="error" variant="contained" size="large" onClick={deleteProductRequest}>Deletar</Button>
+                      <Button color="error" variant="contained" size="large" onClick={deleteProductRequest}>Yes</Button>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <Button color="warning" variant="contained" size="large" onClick={handleCloseDeleteCheck}>Voltar</Button>
+                      <Button color="warning" variant="contained" size="large" onClick={handleCloseDeleteCheck}>No</Button>
                     </Grid>
                   </Grid>
                 </Box>

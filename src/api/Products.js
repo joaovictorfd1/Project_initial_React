@@ -17,9 +17,9 @@ const Products = {
             return { status: 'error', message: e?.response?.data?.message };
         }
     },
-    update: async (params) => {
+    update: async (id, params) => {
         try {
-            let response = await API().put(`/produto`, params);
+            let response = await API().put(`/produto/${id}`, params);
             return response.data;
         } catch (e) {
             return { status: 'error', message: e?.response?.data?.message };
