@@ -42,15 +42,6 @@ const SpanText = styled.span`
   font-weigth: bold;
 `
 
-const NoMatchPage = () => {
-  return (
-    <Title>
-      <Image src={notFoundImage} />
-      <SpanText>Página não encontrada</SpanText>
-    </Title>
-  )
-}
-
 const Routes = () => {
   return (
     <HashRouter basename={process.env.PUBLIC_URL}>
@@ -79,10 +70,17 @@ const Routes = () => {
                 <Registry />
             }
           </Route>
-          
+
           <PrivateRoute path="/dashboard" accessLevel="USER">
             <Dashboard />
           </PrivateRoute>
+
+          <Route path="*">
+            <Title>
+              <Image src={notFoundImage} />
+              <SpanText>Página não encontrada</SpanText>
+            </Title>
+          </Route>
         </Switch>
       </React.Suspense>
     </HashRouter>
