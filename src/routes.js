@@ -42,7 +42,7 @@ const SpanText = styled.span`
 `
 
 const Routes = () => {
-
+  /*
   const [show, setShow] = useState(false)
 
   useEffect(() => {
@@ -51,6 +51,7 @@ const Routes = () => {
       setShow(true)
     }
   }, [])
+  */
 
   return (
     <HashRouter basename={process.env.PUBLIC_URL}>
@@ -78,13 +79,15 @@ const Routes = () => {
                 <Registry />
             }
           </Route>
-
+          
+          {/* 
           {show && (
             <Title>
               <Image src={notFoundImage}/>
               <SpanText>Página não encontrada</SpanText>
             </Title>
           )}
+          */}
 
           <PrivateRoute path="/dashboard" accessLevel="USER">
             <Dashboard />

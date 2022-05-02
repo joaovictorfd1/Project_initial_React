@@ -49,8 +49,13 @@ export default function DataTable() {
   const handleOpenEditProduct = () => setOpenEditProduct(true);
   const handleCloseEditProduct = () => setOpenEditProduct(false);
 
+  const [openDeleteCheck, setOpenDeleteCheck] = useState(false)
+  const handleOpenDeleteCheck = () => setOpenDeleteCheck(true);
+  const handleCloseDeleteCheck = () => setOpenDeleteCheck(false);
+
   const [item, setItem] = useState([])
-  const [itemEdit, setItemEdit] = useState([])
+  const [idDelete, setIdDelete] = useState([])
+  const [nameProduct, setNameProduct] = useState([])
 
   const columns: GridColDef[] = [
     {
@@ -106,7 +111,9 @@ export default function DataTable() {
               handleOpenEditProduct()
             }}>Editar</Button>
             <Button color="error" variant="contained" style={{ marginLeft: '10px' }} onClick={() => {
-              deleteProductRequest(params.row.id)
+              setNameProduct(params.row.nome)
+              setIdDelete(params.row.id)
+              handleOpenDeleteCheck();
             }}>Deletar</Button>
           </>
         )
@@ -122,9 +129,10 @@ export default function DataTable() {
     }
   }
 
-  const deleteProductRequest = async (id: any) => {
-    let response = await Products.delete(id);
+  const deleteProductRequest = async () => {
+    let response = await Products.delete(idDelete);
     if (response.status !== 'error') {
+      handleCloseDeleteCheck();
       getProducts();
       alert.success("Produto deletado");
     }
@@ -190,6 +198,43 @@ export default function DataTable() {
         <FormUpdate
           object={item}
         />
+      </Modal>
+
+      <Modal
+        open={openDeleteCheck}
+        onClose={handleCloseDeleteCheck}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Deseja deletar o produto {nameProduct}?
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            <ThemeProvider theme={theme}>
+              <Container component="main" maxWidth="xs">
+                <CssBaseline />
+                <Box
+                  sx={{
+                    marginTop: 8,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                      <Button color="error" variant="contained" size="large" onClick={deleteProductRequest}>Deletar</Button>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Button color="warning" variant="contained" size="large" onClick={handleCloseDeleteCheck}>Voltar</Button>
+                    </Grid>
+                  </Grid>
+                </Box>
+              </Container>
+            </ThemeProvider>
+          </Typography>
+        </Box>
       </Modal>
 
       <div style={{ height: 700, width: '100%' }}>
